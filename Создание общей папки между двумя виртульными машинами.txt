@@ -1,0 +1,47 @@
+Создание общей папки между двумя виртуальными машинами Ubuntu
+Есть несколько способов создать общую папку между двумя виртуальными машинами Ubuntu. Вот наиболее распространённые методы:
+
+1. Использование NFS (Network File System)
+На серверной машине (которая будет предоставлять доступ к папке):
+bash
+Copy
+Download
+
+sudo apt update
+sudo apt install nfs-kernel-server
+
+# Создайте папку для общего доступа
+sudo mkdir /shared_folder
+sudo chown nobody:nogroup /shared_folder
+sudo chmod 777 /shared_folder
+
+# Настройте экспорт папки
+sudo nano /etc/exports
+Добавьте в файл /etc/exports строку:
+
+
+
+text
+Copy
+Download
+/shared_folder *(rw,sync,no_subtree_check)
+Примените изменения:
+bash
+Copy
+Download
+sudo exportfs -a
+sudo systemctl restart nfs-kernel-server
+На клиентской машине:
+bash
+Copy
+Download
+sudo apt update
+sudo apt install nfs-common
+
+# Создайте точку монтирования
+sudo mkdir /mnt/shared_folder
+
+# Монтируйте общую папку
+sudo mount server_ip:/shared_folder /mnt/shared_folder
+Замените server_ip на IP-адрес серверной машины.
+
